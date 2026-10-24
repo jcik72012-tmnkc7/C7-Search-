@@ -1,4 +1,4 @@
-                      <!DOCTYPE html>
+             <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -80,12 +80,12 @@
             outline: none;
         }
         .search-input::placeholder { color: var(--text-muted); }
-        .icon-btn {
+        .icon-btn, .send-btn {
             background: transparent;
             border: none;
-            color: var(--text-muted);
             cursor: pointer;
-            padding: 8px;
+            color: var(--text-muted);
+            padding: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -94,22 +94,13 @@
         .icon-btn:hover { color: var(--accent-orange); }
         .send-btn {
             background: var(--accent-orange);
-            color: var(--bg-color);
-            border: none;
+            color: #000;
             border-radius: 50%;
             width: 36px;
             height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
             margin-left: 6px;
-            flex-shrink: 0;
         }
-        .send-btn:hover { transform: scale(1.06); background: #ff771a; }
-        .send-btn svg { width: 16px; height: 16px; fill: var(--bg-color); }
-        
+        .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
         .hero-landing {
             flex: 1;
             display: flex;
@@ -117,50 +108,43 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
-            max-width: 700px;
-            margin: 0 auto;
+            padding: 40px 20px;
         }
-        .hero-landing h2 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 700; }
+        .hero-landing h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
         .hero-landing h2 span { color: var(--accent-orange); }
-        .hero-landing p { color: var(--text-muted); font-size: 1.05rem; }
-
+        .hero-landing p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 500px;
+        }
         .results-canvas {
-            width: 100%;
-            max-width: 780px;
-            margin: 20px auto;
-            padding: 0 15px 60px 15px;
             display: none;
             flex-direction: column;
+            max-width: 800px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 20px;
             gap: 20px;
         }
         .result-card {
             background: var(--surface-color);
             border: 1px solid var(--border-color);
-            border-radius: 18px;
+            border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
-            animation: fadeIn 0.35s ease-in-out;
+            animation: fadeIn 0.4s ease-out;
         }
         .result-card h3 {
             margin-top: 0;
             color: var(--accent-orange);
-            font-size: 1.25rem;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
+            font-size: 1.2rem;
         }
-        .result-card p, .result-card li {
-            color: #d1d1d1;
-            line-height: 1.7;
-            font-size: 1rem;
-        }
-        .result-card ul { padding-left: 20px; margin-bottom: 0; }
-        .preview-thumb {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 10px;
-            margin-top: 12px;
-            border: 1px solid var(--border-color);
+        .result-card p {
+            line-height: 1.6;
+            margin-bottom: 0;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -170,19 +154,11 @@
 </head>
 <body>
 
-    <!-- Sticky Header -->
     <header class="app-header">
         <a class="logo-area" href="javascript:location.reload()">
             <h1>C7 <span>Search</span></h1>
         </a>
         <div class="search-container">
-            <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(event)">
-            <button class="icon-btn" title="Upload file" onclick="document.getElementById('fileInput').click()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            </button>
-            <button class="icon-btn" title="Voice search" onclick="startVoiceSearch()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-            </button>
             <input type="text" id="queryInput" class="search-input" placeholder="Ask C7 Search anything..." autofocus onkeypress="handleKeyPress(event)">
             <button class="send-btn" title="Search" onclick="executeC7Search()">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
@@ -192,13 +168,13 @@
 
     <div id="heroLanding" class="hero-landing">
         <h2>C7 <span>Intelligence Engine</span></h2>
-        <p>Ask queries, upload documents, or speak your mind for deep, comprehensive AI-grade answers.</p>
+        <p>Ask queries or explore deep AI-grade answers powered by Gemini.</p>
     </div>
 
     <div id="resultsCanvas" class="results-canvas"></div>
 
     <script>
-        function executeC7Search() {
+        async function executeC7Search() {
             const query = document.getElementById('queryInput').value.trim();
             const canvas = document.getElementById('resultsCanvas');
             const hero = document.getElementById('heroLanding');
@@ -211,94 +187,52 @@
             hero.style.display = 'none';
             canvas.style.display = 'flex';
 
-            const lowerQ = query.toLowerCase();
-            let title = "C7 Comprehensive Synthesis";
-            let overview = "";
-            let corePoints = "";
-            let practicalExample = "";
-
-            // Smart Intent Recognition for rich, structured answers
-            if (lowerQ.includes('resume') || lowerQ.includes('cv') || lowerQ.includes('job')) {
-                title = "Professional Resume Building Guide";
-                overview = "Building a high-impact resume requires a structured, results-driven format that instantly highlights your core competencies, technical skills, and quantifiable achievements to recruiters.";
-                corePoints = `
-                    <li><strong>Contact & Header:</strong> Professional full name, verified email, phone number, and LinkedIn/GitHub profile links.</li>
-                    <li><strong>Professional Summary:</strong> A concise 3-4 sentence elevator pitch summarizing your background, key expertise, and career goals.</li>
-                    <li><strong>Work Experience & Projects:</strong> Use action verbs and metrics (e.g., 'Engineered system architecture that reduced latency by 35%').</li>
-                    <li><strong>Education & Certifications:</strong> Clear academic credentials, graduation year, and specialized certifications.</li>
-                `;
-                practicalExample = "Example Bullet: 'Spearheaded the development of C7 search indexing architecture, optimizing query processing speed by 40% across decentralized nodes.'";
-            } else if (lowerQ.includes('aerodynamic') || lowerQ.includes('formula 1') || lowerQ.includes('f1')) {
-                title = "Formula 1 Aerodynamic Design Principles";
-                overview = "Aerodynamics in Formula 1 dictate how airflow interacts with the race car to generate maximum cornering grip through downforce while minimizing aerodynamic drag on straightaways.";
-                corePoints = `
-                    <li><strong>Downforce Generation:</strong> Front and rear wings force the car downward into the tarmac, increasing tire friction for high-speed cornering.</li>
-                    <li><strong>Ground Effect:</strong> Venturi tunnels under the floor create a low-pressure zone that sucks the car to the ground.</li>
-                    <li><strong>Drag Reduction (DRS):</strong> Adjustable rear wing flap opens on designated straights to reduce drag and increase top speed for overtaking.</li>
-                `;
-                practicalExample = "Real-World Example: Modern ground-effect tunnels allow cars to follow each other closely in corners without losing as much downforce in turbulent wake air.";
-            } else {
-                title = `Analysis: "${escapeHtml(query)}"`;
-                overview = `C7 Intelligence Engine conducted a multi-parameter evaluation of your query. This subject encompasses core structural frameworks, operational efficiency, and strategic execution methodology.`;
-                corePoints = `
-                    <li><strong>Core Objective:</strong> Maximizing clarity, accuracy, and structural reliability.</li>
-                    <li><strong>Key Factors:</strong> Analyzing foundational principles, technical parameters, and real-world execution.</li>
-                    <li><strong>Strategic Outcome:</strong> Streamlined implementation yielding optimal long-term results.</li>
-                `;
-                practicalExample = `Application Context: Designed for seamless integration into professional workflows, technical research, and project execution.`;
-            }
-
             canvas.innerHTML = `
                 <div class="result-card">
-                    <h3>C7 Executive Overview: ${escapeHtml(title)}</h3>
-                    <p>${overview}</p>
-                </div>
-                <div class="result-card">
-                    <h3>Structured Breakdown & Core Principles</h3>
-                    <ul>${corePoints}</ul>
-                </div>
-                <div class="result-card">
-                    <h3>Essential Example & Application</h3>
-                    <p>${practicalExample}</p>
+                    <h3>C7 Intelligence Engine is processing...</h3>
+                    <p style="color: var(--accent-orange);">Synthesizing response via live Gemini AI backend...</p>
                 </div>
             `;
-        }
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const canvas = document.getElementById('resultsCanvas');
-            const hero = document.getElementById('heroLanding');
-            hero.style.display = 'none';
-            canvas.style.display = 'flex';
+            try {
+                const response = await fetch('https://c7-search-1.onrender.com/api/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query: query })
+                });
 
-            let previewHTML = `<p><strong>File Name:</strong> ${escapeHtml(file.name)} (${Math.round(file.size / 1024)} KB)</p>`;
-            if (file.type.startsWith('image/')) {
-                const imageUrl = URL.createObjectURL(file);
-                previewHTML += `<img src="${imageUrl}" class="preview-thumb" alt="Preview">`;
-                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);"><strong>Vision Analysis:</strong> Image successfully parsed into C7 visual workspace.</p>`;
-            } else {
-                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);"><strong>Document Parser:</strong> Document indexed successfully into C7 memory.</p>`;
+                const data = await response.json();
+
+                if (data.success) {
+                    canvas.innerHTML = `
+                        <div class="result-card">
+                            <h3>C7 Executive Response</h3>
+                            <p style="white-space: pre-line; line-height: 1.6;">${escapeHtml(data.answer)}</p>
+                            <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">Processed via: ${escapeHtml(data.node)}</p>
+                        </div>
+                    `;
+                } else {
+                    canvas.innerHTML = `
+                        <div class="result-card">
+                            <h3>C7 Engine Error</h3>
+                            <p style="color: #ff4444;">${escapeHtml(data.error || 'Unknown synthesis failure.')}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Connection Error:', error);
+                canvas.innerHTML = `
+                    <div class="result-card">
+                        <h3>Connection Failed</h3>
+                        <p style="color: #ff4444;">Could not connect to the C7 backend server. Please verify your Render instance.</p>
+                    </div>
+                `;
             }
-
-            canvas.innerHTML = `<div class="result-card"><h3>C7 Secure Attachment Analysis</h3>${previewHTML}</div>`;
         }
 
         function handleKeyPress(event) { if (event.key === 'Enter') executeC7Search(); }
-
-        function startVoiceSearch() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
-                recognition.onresult = function(event) {
-                    document.getElementById('queryInput').value = event.results[0][0].transcript;
-                    executeC7Search();
-                };
-                recognition.start();
-            } else {
-                alert('Voice recognition active. Speak your query.');
-            }
-        }
 
         function escapeHtml(text) {
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
@@ -306,5 +240,6 @@
         }
     </script>
 </body>
-  </html>
-                  
+</html>
+
+          
