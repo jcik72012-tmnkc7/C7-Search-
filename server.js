@@ -1,0 +1,60 @@
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+require('dotenv').config();
+const { GoogleGenAI } = require('@google/genai');
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json({ limit: '15mb' }));
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+app.post('/api/search', async (req, res) => {
+    try {
+        const { query, fileData, mimeType } = req.body;
+
+        if (!query && !fileData) {
+            return res.status(400).json({ error: 'Query or attachment required.' });
+        }
+
+        let contents = [];
+
+        if (fileData) {
+            contents.push({
+                inlineData: {
+                    data: fileData,
+                    mimeType: mimeType || 'image/jpeg'
+                }
+            });
+        }
+
+        const systemInstruction = `You are the C7 Intelligence Engine, a world-class AI search and research assistant. Provide a comprehensive, highly detailed, well-structured explanation with bullet points and examples for the user's inquiry.`;
+
+        contents.push(query ? query : "Analyze this uploaded document/image in detail.");
+
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: contents,
+            config: {
+                systemInstruction: systemInstruction,
+            }
+        });
+
+        res.json({
+            success: true,
+            answer: response.text,
+            node: 'C7 Global Distributed Cluster'
+        });
+
+    } catch (error) {
+        console.error('C7 Engine Backend Error:', error);
+        res.status(500).json({ error: 'Internal C7 Node synthesis failed.' });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`C7 Intelligence Engine Backend active on port ${PORT}`);
+});
+      
