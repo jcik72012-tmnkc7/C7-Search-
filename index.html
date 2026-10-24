@@ -17,34 +17,137 @@
             margin: 0;
         }
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            font-size: 2.8rem;
+            margin-bottom: 25px;
             letter-spacing: 1px;
+            font-weight: 700;
         }
         h1 span {
-            color: #ff6600;
+            color: #ff6600; /* Signature 2000K sodium-orange accent */
         }
-        .search-box {
+        .search-container {
             width: 90%;
-            max-width: 600px;
-            padding: 15px 20px;
-            background: #161616;
-            border: 1px solid #333;
-            border-radius: 30px;
+            max-width: 650px;
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            border-radius: 36px;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .search-container:focus-within {
+            border-color: #ff6600;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.25);
+        }
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
             color: #fff;
             font-size: 1rem;
+            padding: 10px 12px;
             outline: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            transition: border-color 0.3s;
         }
-        .search-box:focus {
-            border-color: #ff6600;
+        .search-input::placeholder {
+            color: #777;
+        }
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover {
+            color: #ff6600;
+        }
+        .send-btn {
+            background: #ff6600;
+            color: #0b0b0b;
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            margin-left: 5px;
+        }
+        .send-btn:hover {
+            transform: scale(1.08);
+            background: #ff771a;
+        }
+        .send-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #0b0b0b;
         }
     </style>
 </head>
 <body>
+
     <h1>C7 <span>Search</span></h1>
-    <input type="text" class="search-box" placeholder="Search the architecture, files, or web..." autofocus>
+
+    <div class="search-container">
+        <!-- Upload / Attachment Icon (+) -->
+        <button class="icon-btn" title="Upload file or image" onclick="alert('C7 Upload feature ready for attachment!')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+
+        <!-- Voice Search Icon -->
+        <button class="icon-btn" title="Voice search" onclick="startVoiceSearch()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+        </button>
+
+        <!-- Search Text Input -->
+        <input type="text" id="queryInput" class="search-input" placeholder="Search architecture, files, or web..." autofocus onkeypress="handleKeyPress(event)">
+
+        <!-- Send / Submit Button -->
+        <button class="send-btn" title="Search" onclick="performSearch()">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+    </div>
+
+    <script>
+        function performSearch() {
+            const query = document.getElementById('queryInput').value;
+            if(query.trim() !== "") {
+                // Redirects to Google Search with your query, or can be customized to your own routing!
+                window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+            } else {
+                alert('Please type a query into C7 Search first.');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        function startVoiceSearch() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.onresult = function(event) {
+                    document.getElementById('queryInput').value = event.results[0][0].transcript;
+                };
+                recognition.start();
+            } else {
+                alert('Voice search is initializing. Try typing your query directly!');
+            }
+        }
+    </script>
+
 </body>
-      </html>
-      
+    </html>
+                
