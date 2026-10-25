@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C7 Search - Ultimate Intelligence Engine</title>
+    <title>C7 Search - Intelligence Engine</title>
     <style>
         :root {
             --bg-color: #080808;
@@ -170,6 +170,7 @@
             margin-top: 20px;
             padding-top: 15px;
             border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
         }
         .action-btn {
             background: rgba(255, 255, 255, 0.05);
@@ -203,7 +204,6 @@
             <h1>C7 <span>Search</span></h1>
         </a>
         <div class="search-container">
-            <!-- File and Camera Upload Input -->
             <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx" style="display: none;" onchange="handleFileSelection(event)">
             <button class="icon-btn" title="Upload file or take photo" onclick="document.getElementById('fileInput').click()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -211,7 +211,7 @@
             <button class="icon-btn" title="Voice search" onclick="startVoiceSearch()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
             </button>
-            <input type="text" id="queryInput" class="search-input" placeholder="Ask C7 Search anything or give document instructions..." autofocus onkeypress="handleKeyPress(event)">
+            <input type="text" id="queryInput" class="search-input" placeholder="Ask C7 Search or give document instructions..." autofocus onkeypress="handleKeyPress(event)">
             <button class="send-btn" title="Search" onclick="executeC7Search()">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
@@ -220,7 +220,7 @@
 
     <div id="heroLanding" class="hero-landing">
         <h2>C7 <span>Intelligence Engine</span></h2>
-        <p>Advanced AI search engineered for deep reasoning, instant document formatting, and multimodal precision.</p>
+        <p>Advanced AI search engineered for zero error walls, privacy sovereignty, and instant multimodal processing.</p>
     </div>
 
     <div id="resultsCanvas" class="results-canvas"></div>
@@ -250,9 +250,9 @@
                 if (file.type.startsWith('image/')) {
                     previewHTML += `<img src="${e.target.result}" class="preview-thumb" alt="Preview">`;
                 }
-                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);">File staged successfully. Type your instructions (e.g. "Format this certificate cleanly as PDF") and tap search!</p>`;
+                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);">File staged securely in C7 memory. Enter instructions (e.g., "Extract details and format as PDF") and tap search!</p>`;
 
-                canvas.innerHTML = `<div class="result-card"><h3>C7 Vision & Document Memory</h3>${previewHTML}</div>`;
+                canvas.innerHTML = `<div class="result-card"><h3>C7 Document Memory</h3>${previewHTML}</div>`;
             };
             reader.readAsDataURL(file);
         }
@@ -263,7 +263,7 @@
             const hero = document.getElementById('heroLanding');
             
             if (query === "" && !attachedFilePayload) {
-                alert('Please enter a query or attach a file.');
+                alert('Please enter a query or attach a document/image.');
                 return;
             }
 
@@ -272,8 +272,8 @@
 
             canvas.innerHTML = `
                 <div class="result-card">
-                    <h3>C7 Intelligence Engine is synthesizing...</h3>
-                    <p style="color: var(--accent-orange);">Processing across global neural nodes...</p>
+                    <h3>C7 Intelligence Engine is processing...</h3>
+                    <p style="color: var(--accent-orange);">Synthesizing secure response across global nodes...</p>
                 </div>
             `;
 
@@ -282,7 +282,7 @@
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        query: query || "Analyze attached file.",
+                        query: query || "Analyze attached document.",
                         fileData: attachedFilePayload,
                         mimeType: attachedFileMime
                     })
@@ -332,7 +332,7 @@
                 };
                 recognition.start();
             } else {
-                alert('Voice search active. Speak your query.');
+                alert('Voice transcription initializing. Please speak clearly.');
             }
         }
 
@@ -344,9 +344,6 @@
         }
     </script>
 </body>
-    </html>
+                    </html>
     
-            
-
-                
-            
+                    
