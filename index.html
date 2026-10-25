@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -149,10 +149,19 @@
         }
         .preview-thumb {
             max-width: 100%;
-            max-height: 300px;
+            max-height: 250px;
             border-radius: 10px;
             margin-top: 12px;
             border: 1px solid var(--border-color);
+        }
+        .attachment-badge {
+            background: rgba(255, 102, 0, 0.15);
+            color: var(--accent-orange);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-bottom: 10px;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(8px); }
@@ -167,14 +176,14 @@
             <h1>C7 <span>Search</span></h1>
         </a>
         <div class="search-container">
-            <input type="file" id="fileInput" style="display: none;" onchange="handleFileUpload(event)">
+            <input type="file" id="fileInput" style="display: none;" onchange="handleFileSelection(event)">
             <button class="icon-btn" title="Upload file or image" onclick="document.getElementById('fileInput').click()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             </button>
             <button class="icon-btn" title="Voice search" onclick="startVoiceSearch()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v1a7 7 0 0 1-14 0v-1"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
             </button>
-            <input type="text" id="queryInput" class="search-input" placeholder="Ask C7 Search anything..." autofocus onkeypress="handleKeyPress(event)">
+            <input type="text" id="queryInput" class="search-input" placeholder="Ask C7 Search or give instructions..." autofocus onkeypress="handleKeyPress(event)">
             <button class="send-btn" title="Search" onclick="executeC7Search()">
                 <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
             </button>
@@ -189,13 +198,47 @@
     <div id="resultsCanvas" class="results-canvas"></div>
 
     <script>
+        let attachedFilePayload = null;
+        let attachedFileMime = null;
+        let attachedFileName = null;
+
+        function handleFileSelection(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            attachedFileName = file.name;
+            attachedFileMime = file.type;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // Extract base64 data string
+                const base64String = e.target.result.split(',')[1];
+                attachedFilePayload = base64String;
+
+                // Show visual indicator in search bar area or canvas
+                const canvas = document.getElementById('resultsCanvas');
+                const hero = document.getElementById('heroLanding');
+                hero.style.display = 'none';
+                canvas.style.display = 'flex';
+
+                let previewHTML = `<div class="attachment-badge">Attached: ${escapeHtml(file.name)}</div>`;
+                if (file.type.startsWith('image/')) {
+                    previewHTML += `<img src="${e.target.result}" class="preview-thumb" alt="Upload Preview">`;
+                }
+                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);">File loaded into C7 memory. Now type your instruction (e.g., "Analyze this image and format as PDF") and hit search!</p>`;
+
+                canvas.innerHTML = `<div class="result-card"><h3>C7 File Staged</h3>${previewHTML}</div>`;
+            };
+            reader.readAsDataURL(file);
+        }
+
         async function executeC7Search() {
             const query = document.getElementById('queryInput').value.trim();
             const canvas = document.getElementById('resultsCanvas');
             const hero = document.getElementById('heroLanding');
             
-            if (query === "") {
-                alert('Please enter a search query.');
+            if (query === "" && !attachedFilePayload) {
+                alert('Please enter a query or attach a file.');
                 return;
             }
 
@@ -204,8 +247,8 @@
 
             canvas.innerHTML = `
                 <div class="result-card">
-                    <h3>C7 Intelligence Engine is synthesizing...</h3>
-                    <p style="color: var(--accent-orange);">Gathering deep insights across neural networks...</p>
+                    <h3>C7 Intelligence Engine is processing...</h3>
+                    <p style="color: var(--accent-orange);">Analyzing query and attachments...</p>
                 </div>
             `;
 
@@ -213,7 +256,11 @@
                 const response = await fetch('https://c7-search-1.onrender.com/api/search', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query: query })
+                    body: JSON.stringify({ 
+                        query: query || "Analyze attached file.",
+                        fileData: attachedFilePayload,
+                        mimeType: attachedFileMime
+                    })
                 });
 
                 const data = await response.json();
@@ -222,6 +269,7 @@
                     canvas.innerHTML = `
                         <div class="result-card">
                             <h3>C7 Executive Synthesis</h3>
+                            ${attachedFileName ? `<div class="attachment-badge">Source: ${escapeHtml(attachedFileName)}</div>` : ''}
                             <p>${escapeHtml(data.answer)}</p>
                             <p style="margin-top: 15px; font-size: 0.85rem; color: var(--text-muted);">Processed via: ${escapeHtml(data.node)}</p>
                         </div>
@@ -245,26 +293,6 @@
             }
         }
 
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const canvas = document.getElementById('resultsCanvas');
-            const hero = document.getElementById('heroLanding');
-            hero.style.display = 'none';
-            canvas.style.display = 'flex';
-
-            let previewHTML = `<p><strong>File Attached:</strong> ${escapeHtml(file.name)} (${Math.round(file.size / 1024)} KB)</p>`;
-            if (file.type.startsWith('image/')) {
-                const imageUrl = URL.createObjectURL(file);
-                previewHTML += `<img src="${imageUrl}" class="preview-thumb" alt="Uploaded Preview">`;
-                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);"><strong>C7 Vision:</strong> Image successfully loaded into workspace memory.</p>`;
-            } else {
-                previewHTML += `<p style="margin-top:10px; color:var(--accent-orange);"><strong>C7 Document Parser:</strong> File indexed securely.</p>`;
-            }
-
-            canvas.innerHTML = `<div class="result-card"><h3>C7 Attachment Analysis</h3>${previewHTML}</div>`;
-        }
-
         function startVoiceSearch() {
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -275,7 +303,7 @@
                 };
                 recognition.start();
             } else {
-                alert('Voice recognition is initializing. Speak your query clearly.');
+                alert('Voice recognition ready. Speak your query.');
             }
         }
 
@@ -287,5 +315,8 @@
         }
     </script>
 </body>
-</html>
-                      
+   </html>
+           
+
+                
+            
