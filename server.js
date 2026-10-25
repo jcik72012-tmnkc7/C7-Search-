@@ -27,7 +27,7 @@ app.post('/api/search', async (req, res) => {
         }
 
         const response = await ai.models.generateContent({
-            model: 'gemini-1.5-flash',
+            model: 'gemini-flash-latest',
             contents: contents,
             config: {
                 systemInstruction: "You are C7 Intelligence Engine, an elite AI search and document synthesis platform. Provide precise, executive-level answers, breakdown insights clearly, and format outputs so users can easily read or convert them.",
@@ -53,6 +53,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`C7 Search Backend running on port ${PORT}`);
 });
-                
+            
         
-    
