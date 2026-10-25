@@ -4,7 +4,7 @@ const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '10mb' })); // Allow larger payloads for file uploads
+app.use(express.json({ limit: '15mb' }));
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -12,12 +12,11 @@ app.post('/api/search', async (req, res) => {
     try {
         const { query, fileData, mimeType } = req.body;
         if (!query && !fileData) {
-            return res.status(400).json({ success: false, error: 'Query or file is required.' });
+            return res.status(400).json({ success: false, error: 'Query or file attachment is required.' });
         }
 
-        let contents = [query || "Analyze this attached file and convert it into a structured PDF-ready layout format."];
+        let contents = [query || "Analyze this file attachment thoroughly and format the response cleanly."];
         
-        // If an image or document was uploaded, include it in the Gemini payload
         if (fileData) {
             contents.push({
                 inlineData: {
@@ -31,14 +30,14 @@ app.post('/api/search', async (req, res) => {
             model: 'gemini-1.5-flash',
             contents: contents,
             config: {
-                systemInstruction: "You are C7 Intelligence Engine, an elite AI search and document synthesis engine. Provide comprehensive, accurate executive responses, analyze attached files thoroughly, and format output cleanly for PDF or document conversion.",
+                systemInstruction: "You are C7 Intelligence Engine, an elite AI search and document synthesis platform. Provide precise, executive-level answers, breakdown insights clearly, and format outputs so users can easily read or convert them.",
             }
         });
 
         res.json({
             success: true,
             answer: response.text,
-            node: 'C7-Core-Matrix-Node-01'
+            node: 'C7-Global-Matrix-Node-01'
         });
 
     } catch (error) {
@@ -54,4 +53,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`C7 Search Backend running on port ${PORT}`);
 });
-         
+                
+        
+    
