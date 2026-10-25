@@ -27,17 +27,17 @@ app.post('/api/search', async (req, res) => {
         }
 
         const response = await ai.models.generateContent({
-            model: 'gemini-flash-latest',
+            model: 'gemini-1.5-flash',
             contents: contents,
             config: {
-                systemInstruction: "You are C7 Intelligence Engine, an elite, hyper-localized AI search and document synthesis platform. Provide precise, executive-level answers, structured data extractions, and print-ready document layouts with absolute zero errors.",
+                systemInstruction: "You are C7 Intelligence Engine, an elite AI search and document synthesis platform. Provide precise, executive-level answers, structured data extractions, and print-ready document layouts with absolute zero errors.",
             }
         });
 
         res.json({
             success: true,
             answer: response.text,
-            node: 'C7-Global-Secure-Matrix-01'
+            node: 'C7-Secure-Matrix-Node-01'
         });
 
     } catch (error) {
@@ -53,4 +53,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`C7 Search Backend running on port ${PORT}`);
 });
-                                         
+                    
+            
